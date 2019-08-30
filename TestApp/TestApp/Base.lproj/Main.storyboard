@@ -24,6 +24,61 @@
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="dpk-sZ-4zV">
                                         <rect key="frame" x="0.0" y="0.0" width="834" height="1112"/>
                                     </imageView>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Nxx-Md-HMV">
+                                        <rect key="frame" x="66" y="874" width="100" height="100"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="赤"/>
+                                        <connections>
+                                            <action selector="selectRed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="77R-uG-TPd"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bGv-py-ZNh">
+                                        <rect key="frame" x="262" y="874" width="100" height="100"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="黒"/>
+                                        <connections>
+                                            <action selector="selectBlack:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Tm3-H6-W29"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YV6-pn-ts3">
+                                        <rect key="frame" x="476" y="874" width="100" height="100"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="青"/>
+                                        <connections>
+                                            <action selector="selectBlue:" destination="BYZ-38-t0r" eventType="touchUpInside" id="EGW-Om-mfw"/>
+                                        </connections>
+                                    </button>
+                                    <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" continuous="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mBw-20-dia">
+                                        <rect key="frame" x="64" y="1032" width="690" height="30"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <connections>
+                                            <action selector="slideSlider:" destination="BYZ-38-t0r" eventType="valueChanged" id="fyn-8z-pOj"/>
+                                        </connections>
+                                    </slider>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AVQ-Pf-gUJ">
+                                        <rect key="frame" x="74" y="64" width="100" height="100"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="戻る"/>
+                                        <connections>
+                                            <action selector="pressUndoButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="iZ0-ZK-OX6"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AMb-yM-yDf">
+                                        <rect key="frame" x="681" y="64" width="100" height="100"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="進む"/>
+                                        <connections>
+                                            <action selector="pressRedoButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Chc-hh-Iq2"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mWU-ti-eCO">
+                                        <rect key="frame" x="359" y="64" width="100" height="100"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal" title="保存"/>
+                                        <connections>
+                                            <action selector="pressSaveButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Kx0-Ij-vZc"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="dpk-sZ-4zV" firstAttribute="leading" secondItem="w3B-yX-YdI" secondAttribute="leading" id="J0k-NR-Tz3"/>
@@ -47,6 +102,7 @@
                     <connections>
                         <outlet property="canvasView" destination="dpk-sZ-4zV" id="d1f-tT-pyD"/>
                         <outlet property="scrollView" destination="w3B-yX-YdI" id="l75-Lz-REN"/>
+                        <outlet property="sliderValue" destination="mBw-20-dia" id="Ros-rH-qcw"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

@@ -16,11 +16,63 @@ class ViewController: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var canvasView: UIImageView!
     
+    //Undoボタン
+    @IBAction func pressUndoButton(_ sender: Any) {
+        if currentDrawNumber <= 0 {
+            return
+        }
+        //self.canvasView.image = saveImage   //現在保存されているイメージ（操作前のイメージ）に置き換える
+        self.canvasView.image = saveImageArray[currentDrawNumber - 1]
+        currentDrawNumber -= 1
+    }
+    //redoボタン
+    @IBAction func pressRedoButton(_ sender: Any) {
+        if currentDrawNumber + 1 > saveImageArray.count - 1{
+            return
+        }
+        
+        self.canvasView.image = saveImageArray[currentDrawNumber + 1]
+        currentDrawNumber += 1
+    }
+    
+    //保存ボタン
+    @IBAction func pressSaveButton(_ sender: Any) {
+        //カメラロールに保存する
+        UIImageWriteToSavedPhotosAlbum(self.canvasView.image!, self, nil, nil)
+    }
+    
+    //ペンの色の設定
+    @IBAction func selectRed(_ sender: Any) {
+        drawColor = UIColor.red
+    }
+    
+    @IBAction func selectBlack(_ sender: Any) {
+        drawColor = UIColor.black
+    }
+    
+    @IBAction func selectBlue(_ sender: Any) {
+        drawColor = UIColor.blue
+    }
+    
+    //ペンの太さスライダー
+    @IBOutlet weak var sliderValue: UISlider!
+    
+    @IBAction func slideSlider(_ sender: Any) {
+        lineWidth = CGFloat(sliderValue.value) * scale
+        //print("slider value was changed\(String(describing: lineWidth))")
+    }
+    
+    
     var lastPoint: CGPoint? //直前のタッチ座標の保存用
     var lineWidth: CGFloat? //描画用の線の太さの保存用
     var drawColor = UIColor() //描画色の保存
-    var bezierPath = UIBezierPath() //お絵かきに使用
+    //var bezierPath = UIBezierPath() //お絵かきに使用
+    var bezierPath: UIBezierPath?   //宣言だけにする
+    //var saveImage: UIImage? //Undo, Redo用にイメージを保存する用
+    var saveImageArray = [UIImage]() //イメージ保存用の配列
+    var currentDrawNumber = 0   //現在表示しているのが何回目のタッチかを保存
     let defaultLineWidth: CGFloat = 10.0
+    let scale = CGFloat(30)  //線の太さに変換するためにSliderにかける値
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,6 +83,8 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         scrollView.zoomScale = 1.0          //拡大率初期値
         
         prepareDrawing()    //お絵かき準備
+        
+
     }
 
     /**
@@ -64,8 +118,16 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         myDraw.maximumNumberOfTouches = 1
         self.scrollView.addGestureRecognizer(myDraw)
         
+        //ペンの色の設定
+        drawColor = UIColor.black
+        //ペンの太さの初期値
+        lineWidth = CGFloat(sliderValue.value) * scale
+        
         //実際のお絵かきで言うキャンバスの準備（何も描かれていないUIImageの作成）
         prepareCanvas()
+        
+        //saveImage = self.canvasView.image   //開始時のイメージ（空白）をとりあえず保存
+        saveImageArray.append(self.canvasView.image!)   //開始時のイメージを配列0に保存
     }
     
     /**
@@ -82,30 +144,45 @@ class ViewController: UIViewController, UIScrollViewDelegate {
         }
         
         //線の太さと色を指定する
-        lineWidth = defaultLineWidth
-        drawColor = UIColor.black
+        //lineWidth = defaultLineWidth
+        //drawColor = UIColor.black
         
         let touchPoint = drawGesture.location(in: canvasView)   //タッチ座標を取得
         switch drawGesture.state{
         case .began:
+            
+            //saveImage = self.canvasView.image   //現在のイメージを保存→end時に最新の画像を保存することにする
+            
+            bezierPath = UIBezierPath()
+            
             lastPoint = touchPoint  //タッチ座標をlastTouchPointとして保存
             
             //touchPointの座標はscrollView基準なのでキャンバスの大きさに合わせた座標に変換
             //lastPointをキャンバスサイズにコンバート
             let lastPointForCanvasSize = convertPointForCanvasSize(originalPoint: lastPoint!, canvasSize: canvas.size)
-            bezierPath.lineCapStyle = .round    //端を丸く
-            bezierPath.lineWidth = defaultLineWidth //描画線の太さ
-            bezierPath.move(to: lastPointForCanvasSize)
+            bezierPath!.lineCapStyle = .round    //端を丸く
+            bezierPath!.lineWidth = lineWidth! //描画線の太さ
+            bezierPath!.move(to: lastPointForCanvasSize)
             
         case .changed:
             let newPoint = touchPoint   //タッチポイントを最新として保存
             
             //Drawの実行
-            let imageAfterDraw = drawGestureAtChanged(canvas: canvas, lastPoint: lastPoint!, newPoint: newPoint, bezierPath: bezierPath)
+            let imageAfterDraw = drawGestureAtChanged(canvas: canvas, lastPoint: lastPoint!, newPoint: newPoint, bezierPath: bezierPath!)
             self.canvasView.image = imageAfterDraw
             lastPoint = newPoint
             
         case .ended:
+            //Undo後にcurrentDrawNumberとインデックスの矛盾をなくす
+            while currentDrawNumber != saveImageArray.count - 1{
+                saveImageArray.removeLast()
+            }
+            currentDrawNumber += 1  //タッチ回数を追加
+            saveImageArray.append(self.canvasView.image!)    //現在の画像を保存現在の画像を保存
+            //インデックスのチェック
+            if currentDrawNumber != saveImageArray.count - 1 {
+                fatalError("saveImageArray index error")
+            }
             print("Finish dragging")
             
         default:
